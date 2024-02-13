@@ -3,23 +3,29 @@ import App from '@/App';
 import Settings from '@/pages/Settings';
 import Game from '@/pages/Game';
 import Record from '@/pages/Record';
+import Home from '@/pages/Home';
 
 const router = createBrowserRouter([
   {
-    path: '/',
     element: <App />,
-  },
-  {
-    path: '/settings',
-    element: <Settings />,
-  },
-  {
-    path: '/game',
-    element: <Game />,
-  },
-  {
-    path: '/record',
-    element: <Record />,
+    children: [
+      {
+        path: '/',
+        element: <Home />,
+      },
+      {
+        path: '/settings',
+        element: <Settings />,
+      },
+      {
+        path: '/game',
+        element: <Game />,
+      },
+      {
+        path: '/record',
+        element: <Record />,
+      },
+    ],
   },
 ]);
 
