@@ -11,7 +11,7 @@ const Settings = () => {
         <BoardSettings />
         <PlayerSettings />
         <FirstPlayerSettings />
-        <Link to={'/game'} className="btn self-center mt-10">
+        <Link to={'/game/play'} className="btn self-center mt-10">
           GAME START
         </Link>
       </div>
