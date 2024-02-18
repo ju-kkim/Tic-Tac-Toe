@@ -3,8 +3,8 @@ import { Color, Mark } from '@/context/gameInfo';
 import { MouseEventHandler } from 'react';
 
 interface CellProps {
-  value: Mark;
-  color: Color;
+  value: Mark | null;
+  color: Color | null;
   isDisabled: boolean;
   clickHandler: MouseEventHandler;
 }
