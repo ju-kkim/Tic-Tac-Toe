@@ -1,6 +1,14 @@
+import { useGameInfoContext } from '@/context/gameInfo';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 function Home() {
+  const { resetSettings } = useGameInfoContext();
+
+  useEffect(() => {
+    resetSettings();
+  }, [resetSettings]);
+
   return (
     <div className="h-[100vh] flex flex-col items-center justify-center gap-10">
       <h1 className="text-5xl font-bold">Tic Tac Toe</h1>

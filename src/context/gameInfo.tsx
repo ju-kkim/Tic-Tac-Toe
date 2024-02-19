@@ -55,6 +55,7 @@ interface GameInfo {
   setPlayerInfo: React.Dispatch<React.SetStateAction<PlayerInfo>>;
   recordGame: RecordGame[];
   setRecordGame: React.Dispatch<React.SetStateAction<RecordGame[]>>;
+  resetSettings: () => void;
 }
 
 const gameInfoContext = createContext<GameInfo | null>(null);
@@ -64,7 +65,20 @@ const GameInfoProvider = ({ children }: { children: React.ReactNode }) => {
   const [playerInfo, setPlayerInfo] = useState(INIT_PLAYER_INFO);
   const [recordGame, setRecordGame] = useState<RecordGame[]>([]);
 
-  const value = { boardSize, setBoardSize, playerInfo, setPlayerInfo, recordGame, setRecordGame };
+  function resetSettings() {
+    setBoardSize(INIT_BOARD_SIZE);
+    setPlayerInfo(INIT_PLAYER_INFO);
+  }
+
+  const value = {
+    boardSize,
+    setBoardSize,
+    playerInfo,
+    setPlayerInfo,
+    recordGame,
+    setRecordGame,
+    resetSettings,
+  };
 
   return <gameInfoContext.Provider value={value}>{children}</gameInfoContext.Provider>;
 };

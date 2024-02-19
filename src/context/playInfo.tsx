@@ -9,26 +9,29 @@ export type RenderBoard = CellInfo[][];
 export type HistoryBoard = RenderBoard[];
 
 interface PlayInfo {
-  currentPlayer: Player;
-  setCurrentPlayer: React.Dispatch<React.SetStateAction<Player>>;
-  nextPlayer: Player;
-  setNextPlayer: React.Dispatch<React.SetStateAction<Player>>;
   historyBoard: HistoryBoard;
   setHistoryBoard: React.Dispatch<React.SetStateAction<HistoryBoard>>;
   winner: Player | null;
   setWinner: React.Dispatch<React.SetStateAction<Player | null>>;
+  players: Player[];
+  currentPlayerIdx: number;
+  changePlayerOrder: () => void;
+  isFinish: boolean;
+  setIsFinish: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const playInfoContext = createContext<PlayInfo | null>(null);
 
 const PlayInfoProvider = ({ children }: { children: React.ReactNode }) => {
   const { boardSize, playerInfo } = useGameInfoContext();
+  const players: Player[] = Object.values(playerInfo).sort((a, b) => {
+    if (a.isFirst && !b.isFirst) return -1;
+    if (!a.isFirst && b.isFirst) return 1;
 
-  const INIT_FIRST_PAYER = Object.values(playerInfo).filter((player) => player.isFirst);
-  const INIT_SECOND_PLAYER = Object.values(playerInfo).filter((player) => !player.isFirst);
-
-  const [currentPlayer, setCurrentPlayer] = useState(INIT_FIRST_PAYER[0]);
-  const [nextPlayer, setNextPlayer] = useState(INIT_SECOND_PLAYER[0]);
+    return 0;
+  });
+  const [isFinish, setIsFinish] = useState(false);
+  const [currentPlayerIdx, setCurrentPlayerIdx] = useState(0);
   const [historyBoard, setHistoryBoard] = useState<HistoryBoard>([]);
   const [winner, setWinner] = useState<Player | null>(null);
 
@@ -43,15 +46,20 @@ const PlayInfoProvider = ({ children }: { children: React.ReactNode }) => {
     setHistoryBoard([board]);
   }, [boardSize]);
 
+  function changePlayerOrder() {
+    setCurrentPlayerIdx((currentIndex) => (currentIndex + 1) % players.length);
+  }
+
   const value = {
-    currentPlayer,
-    setCurrentPlayer,
-    nextPlayer,
-    setNextPlayer,
     historyBoard,
     setHistoryBoard,
     winner,
     setWinner,
+    players,
+    currentPlayerIdx,
+    changePlayerOrder,
+    isFinish,
+    setIsFinish,
   };
   return <playInfoContext.Provider value={value}>{children}</playInfoContext.Provider>;
 };

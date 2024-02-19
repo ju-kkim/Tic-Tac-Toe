@@ -9,3 +9,5 @@ export const colorClassName = {
   green: { bg: 'bg-green-500', text: 'text-green-500' },
   yellow: { bg: 'bg-yellow-500', text: 'text-yellow-500' },
 };
+
+export const MAX_CANCLE_COUNT = 3;

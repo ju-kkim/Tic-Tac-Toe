@@ -6,20 +6,22 @@ import { RenderBoard, usePlayInfoContext } from '@/context/playInfo';
 import checkWin from '@/utils/checkWin';
 import checkMarkCount from '@/utils/checkMarkCount';
 import { Link } from 'react-router-dom';
+import PlayerInfo from '@/components/PlayerInfo/PlayerInfo';
 
 const Game = () => {
-  const { boardSize, setRecordGame } = useGameInfoContext();
+  const { boardSize, playerInfo, setRecordGame } = useGameInfoContext();
+  const { player1, player2 } = playerInfo;
   const {
-    currentPlayer,
-    setCurrentPlayer,
-    nextPlayer,
-    setNextPlayer,
+    players,
+    currentPlayerIdx,
+    changePlayerOrder,
     historyBoard,
     setHistoryBoard,
     winner,
     setWinner,
+    isFinish,
+    setIsFinish,
   } = usePlayInfoContext();
-  const [isFinish, setIsFinish] = useState(false);
   const [renderBoard, setRenderBoard] = useState<RenderBoard>([]);
 
   useEffect(() => {
@@ -59,18 +61,17 @@ const Game = () => {
       setIsFinish(true);
     }
     setWinner(winner);
-  }, [boardSize, renderBoard, setWinner]);
+  }, [boardSize, renderBoard, setWinner, setIsFinish]);
 
   function clickCell(rowIdx: number, colIdx: number) {
     // 마크 표시
     const currentOrder = historyBoard.length;
     const updateBoard = renderBoard.map((row) => row.map((cell) => ({ ...cell })));
-    updateBoard[rowIdx][colIdx] = { order: currentOrder, player: currentPlayer };
+    updateBoard[rowIdx][colIdx] = { order: currentOrder, player: players[currentPlayerIdx] };
     setHistoryBoard((prev) => [...prev, updateBoard]);
 
     // 플레이어 변경
-    setCurrentPlayer(nextPlayer);
-    setNextPlayer(currentPlayer);
+    changePlayerOrder();
   }
 
   return (
@@ -79,7 +80,10 @@ const Game = () => {
         HOME
       </Link>
       <div className="flex flex-col items-center">
-        <div className="flex gap-5 mb-5">{/* 플레이어 정보 영역 */}</div>
+        <div className="flex gap-5 mb-5">
+          <PlayerInfo player={player1} />
+          <PlayerInfo player={player2} />
+        </div>
 
         <Board>
           {renderBoard.map((cells, cellsIdx) => (
