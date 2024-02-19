@@ -7,7 +7,7 @@ function Home() {
       <Link to={'/settings'} className="btn text-3xl">
         게임 시작
       </Link>
-      <Link to={'/record'} className="text-xl">
+      <Link to={'/game/record'} className="text-xl">
         기록된 게임 보기
       </Link>
     </div>

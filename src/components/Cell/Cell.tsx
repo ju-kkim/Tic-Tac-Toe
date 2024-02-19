@@ -6,7 +6,7 @@ interface CellProps {
   value: Mark | null;
   color: Color | null;
   isDisabled: boolean;
-  clickHandler: MouseEventHandler;
+  clickHandler?: MouseEventHandler;
 }
 
 const Cell = ({ value, color, isDisabled, clickHandler }: CellProps) => {

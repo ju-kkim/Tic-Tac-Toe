@@ -6,7 +6,7 @@ interface CellInfo {
   player: Player | null;
 }
 export type RenderBoard = CellInfo[][];
-type HistoryBoard = RenderBoard[];
+export type HistoryBoard = RenderBoard[];
 
 interface PlayInfo {
   currentPlayer: Player;

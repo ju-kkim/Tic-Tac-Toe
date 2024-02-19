@@ -3,11 +3,12 @@ import Board from '@/components/Board/Board';
 import Cell from '@/components/Cell/Cell';
 import { useGameInfoContext } from '@/context/gameInfo';
 import { usePlayInfoContext } from '@/context/playInfo';
-
 import checkWin from '@/utils/checkWin';
+import checkMarkCount from '@/utils/checkMarkCount';
+import { Link } from 'react-router-dom';
 
 const Game = () => {
-  const { boardSize } = useGameInfoContext();
+  const { boardSize, setRecordGame } = useGameInfoContext();
   const {
     currentPlayer,
     setCurrentPlayer,
@@ -16,22 +17,28 @@ const Game = () => {
     renderBoard,
     setRenderBoard,
     historyBoard,
+    setHistoryBoard,
     winner,
     setWinner,
   } = usePlayInfoContext();
   const [isFinish, setIsFinish] = useState(false);
 
   useEffect(() => {
-    const checkingMarkCount = renderBoard.reduce(
-      (acc, row) => acc + row.filter((cell) => cell.player).length,
-      0
-    );
-
-    if (checkingMarkCount < boardSize) {
+    if (!isFinish) {
       return;
     }
 
-    if (checkingMarkCount === boardSize ** 2) {
+    setRecordGame((prev) => [...prev, { winner: winner, board: renderBoard }]);
+  }, [isFinish, renderBoard, setRecordGame, winner]);
+
+  useEffect(() => {
+    const markCount = checkMarkCount(renderBoard);
+
+    if (markCount < boardSize) {
+      return;
+    }
+
+    if (markCount === boardSize ** 2) {
       setIsFinish(true);
     }
 
@@ -41,7 +48,7 @@ const Game = () => {
     }
 
     const winner = getWinner();
-    if (checkingMarkCount >= boardSize && winner) {
+    if (markCount >= boardSize && winner) {
       setIsFinish(true);
     }
     setWinner(winner);
@@ -49,10 +56,11 @@ const Game = () => {
 
   function clickCell(rowIdx: number, colIdx: number) {
     // 마크 표시
-    const currentOrder = historyBoard.length - 1;
-    const updateBoard = [...renderBoard];
+    const currentOrder = historyBoard.length;
+    const updateBoard = renderBoard.map((row) => row.map((cell) => ({ ...cell })));
     updateBoard[rowIdx][colIdx] = { order: currentOrder, player: currentPlayer };
     setRenderBoard(updateBoard);
+    setHistoryBoard((prev) => [...prev, updateBoard]);
 
     // 플레이어 변경
     setCurrentPlayer(nextPlayer);
@@ -61,7 +69,12 @@ const Game = () => {
 
   return (
     <div className="p-10">
-      <div className="w-full">
+      <Link to={'/'} className="btn mt-5">
+        HOME
+      </Link>
+      <div className="flex flex-col items-center">
+        <div className="flex gap-5 mb-5">{/* 플레이어 정보 영역 */}</div>
+
         <Board>
           {renderBoard.map((cells, cellsIdx) => (
             <div key={cellsIdx} className="flex">
@@ -77,13 +90,15 @@ const Game = () => {
             </div>
           ))}
         </Board>
-        {isFinish && winner && (
-          <div>
-            승리 {winner.name}
-            {winner.mark}
-          </div>
-        )}
-        {isFinish && winner === null && <div>무승부입니다</div>}
+        <div className="mt-2">
+          {isFinish && winner && (
+            <div className="text-lg">
+              승리 {winner.name}
+              {winner.mark}
+            </div>
+          )}
+          {isFinish && winner === null && <div className="text-lg">무승부입니다</div>}
+        </div>
       </div>
     </div>
   );

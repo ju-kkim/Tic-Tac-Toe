@@ -1,5 +1,6 @@
 import { BOARD_SIZE } from '@/constant/const';
 import { createContext, useContext, useState } from 'react';
+import { HistoryBoard, RenderBoard } from './playInfo';
 
 type BoardSize = number;
 export type Mark = '●' | '■' | '▲' | '✖︎';
@@ -9,6 +10,7 @@ export interface Player {
   mark: Mark;
   color: Color;
   isFirst: boolean;
+  cancleCount: number;
 }
 interface PlayerInfo {
   [key: string]: Player;
@@ -16,6 +18,10 @@ interface PlayerInfo {
 interface GameInfo {
   boardSize: BoardSize;
   playerInfo: PlayerInfo;
+}
+interface RecordGame {
+  winner: Player | null;
+  board: RenderBoard;
 }
 
 const INIT_BOARD_SIZE = BOARD_SIZE.min;
@@ -29,12 +35,14 @@ function initializePlayerInfo(): PlayerInfo {
       mark: '✖︎',
       color: 'blue',
       isFirst: isFirstPlayer,
+      cancleCount: 0,
     },
     player2: {
       name: 'player2',
       mark: '●',
       color: 'red',
       isFirst: !isFirstPlayer,
+      cancleCount: 0,
     },
   };
 }
@@ -45,6 +53,8 @@ interface GameInfo {
   setBoardSize: React.Dispatch<React.SetStateAction<number>>;
   playerInfo: PlayerInfo;
   setPlayerInfo: React.Dispatch<React.SetStateAction<PlayerInfo>>;
+  recordGame: RecordGame[];
+  setRecordGame: React.Dispatch<React.SetStateAction<RecordGame[]>>;
 }
 
 const gameInfoContext = createContext<GameInfo | null>(null);
@@ -52,8 +62,9 @@ const gameInfoContext = createContext<GameInfo | null>(null);
 const GameInfoProvider = ({ children }: { children: React.ReactNode }) => {
   const [boardSize, setBoardSize] = useState(INIT_BOARD_SIZE);
   const [playerInfo, setPlayerInfo] = useState(INIT_PLAYER_INFO);
+  const [recordGame, setRecordGame] = useState<RecordGame[]>([]);
 
-  const value = { boardSize, setBoardSize, playerInfo, setPlayerInfo };
+  const value = { boardSize, setBoardSize, playerInfo, setPlayerInfo, recordGame, setRecordGame };
 
   return <gameInfoContext.Provider value={value}>{children}</gameInfoContext.Provider>;
 };
