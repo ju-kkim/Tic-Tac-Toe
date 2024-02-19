@@ -19,9 +19,8 @@ const Record = () => {
               {game.board.map((cells, cellsIdx) => (
                 <div key={cellsIdx} className="flex">
                   {cells.map((cell, cellIdx) => (
-                    <div className="relative flex">
+                    <div key={cellIdx} className="relative flex">
                       <Cell
-                        key={cellIdx}
                         value={cell.player?.mark || null}
                         color={cell.player?.color || null}
                         isDisabled={true}
