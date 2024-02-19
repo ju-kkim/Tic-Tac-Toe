@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Board from '@/components/Board/Board';
 import Cell from '@/components/Cell/Cell';
 import { useGameInfoContext } from '@/context/gameInfo';
-import { usePlayInfoContext } from '@/context/playInfo';
+import { RenderBoard, usePlayInfoContext } from '@/context/playInfo';
 import checkWin from '@/utils/checkWin';
 import checkMarkCount from '@/utils/checkMarkCount';
 import { Link } from 'react-router-dom';
@@ -14,14 +14,21 @@ const Game = () => {
     setCurrentPlayer,
     nextPlayer,
     setNextPlayer,
-    renderBoard,
-    setRenderBoard,
     historyBoard,
     setHistoryBoard,
     winner,
     setWinner,
   } = usePlayInfoContext();
   const [isFinish, setIsFinish] = useState(false);
+  const [renderBoard, setRenderBoard] = useState<RenderBoard>([]);
+
+  useEffect(() => {
+    if (historyBoard.length === 0) {
+      return;
+    }
+    const board = historyBoard[historyBoard.length - 1];
+    setRenderBoard(board);
+  }, [historyBoard]);
 
   useEffect(() => {
     if (!isFinish) {
@@ -59,7 +66,6 @@ const Game = () => {
     const currentOrder = historyBoard.length;
     const updateBoard = renderBoard.map((row) => row.map((cell) => ({ ...cell })));
     updateBoard[rowIdx][colIdx] = { order: currentOrder, player: currentPlayer };
-    setRenderBoard(updateBoard);
     setHistoryBoard((prev) => [...prev, updateBoard]);
 
     // 플레이어 변경

@@ -13,8 +13,6 @@ interface PlayInfo {
   setCurrentPlayer: React.Dispatch<React.SetStateAction<Player>>;
   nextPlayer: Player;
   setNextPlayer: React.Dispatch<React.SetStateAction<Player>>;
-  renderBoard: RenderBoard;
-  setRenderBoard: React.Dispatch<React.SetStateAction<RenderBoard>>;
   historyBoard: HistoryBoard;
   setHistoryBoard: React.Dispatch<React.SetStateAction<HistoryBoard>>;
   winner: Player | null;
@@ -31,7 +29,6 @@ const PlayInfoProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [currentPlayer, setCurrentPlayer] = useState(INIT_FIRST_PAYER[0]);
   const [nextPlayer, setNextPlayer] = useState(INIT_SECOND_PLAYER[0]);
-  const [renderBoard, setRenderBoard] = useState<RenderBoard>([]);
   const [historyBoard, setHistoryBoard] = useState<HistoryBoard>([]);
   const [winner, setWinner] = useState<Player | null>(null);
 
@@ -43,7 +40,6 @@ const PlayInfoProvider = ({ children }: { children: React.ReactNode }) => {
     const board: RenderBoard = Array.from({ length: boardSize }, () =>
       Array.from({ length: boardSize }, () => initCell)
     );
-    setRenderBoard(board);
     setHistoryBoard([board]);
   }, [boardSize]);
 
@@ -52,8 +48,6 @@ const PlayInfoProvider = ({ children }: { children: React.ReactNode }) => {
     setCurrentPlayer,
     nextPlayer,
     setNextPlayer,
-    renderBoard,
-    setRenderBoard,
     historyBoard,
     setHistoryBoard,
     winner,

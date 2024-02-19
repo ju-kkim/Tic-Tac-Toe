@@ -1,6 +1,6 @@
 import { BOARD_SIZE } from '@/constant/const';
 import { createContext, useContext, useState } from 'react';
-import { HistoryBoard, RenderBoard } from './playInfo';
+import { RenderBoard } from './playInfo';
 
 type BoardSize = number;
 export type Mark = '●' | '■' | '▲' | '✖︎';
